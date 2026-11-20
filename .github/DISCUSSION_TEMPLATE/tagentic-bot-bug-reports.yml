@@ -16,8 +16,8 @@ body:
     id: version
     attributes:
       label: TER-AI version
-      description: Output of `terai --version`, or the release tag you installed (for example v0.18.0-rc1).
-      placeholder: v0.18.0-rc1
+      description: Output of `terai --version`, or the release tag you installed (for example v0.18.1).
+      placeholder: v0.18.1
     validations:
       required: true
   - type: input

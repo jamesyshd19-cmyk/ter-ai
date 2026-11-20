@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+### Fixed
+- Correction to the v0.18.0 notes: they say optional Pillow is now 13.0.0, but `uv.lock` in v0.18.0 and v0.18.1 still pins Pillow 12.3.0. The Pillow 13.0.0 update is open as dependabot pull request #17 and is not merged.
+
+### Changed
+- PROJECT_NOTICE (EN/TH) brought up to date: a new "Current state" section (repository name ter-ai, Tagentic1 beta, the hosted Telegram bot @Terai_F0_bot and its restricted public mode, Knowledge-inbox with fact checking before `Knowledge.md`, the Tagentic telegram bot community with Teemate, response-time limits), present-tense wording for the maintainer's school period, and the hosted bot added to what happens when the project closes.
+
+## v0.18.1 (2026-11-20)
+
+Patch release. Documentation and version metadata only; no code path, model or Telegram bot behaviour changes, and no new benchmark or model-quality claims.
+
+### Changed
+- Package version `0.18.1`, matching the `v0.18.1` release tag (`pyproject.toml`, `terai_router.__version__`, `uv.lock`).
+- README (EN/TH) and the Tagentic1 `Systemprompt.md` name v0.18.1 as the latest release.
+- Discussion forms use `v0.18.1` as the example version instead of `v0.18.0-rc1`.
+
+### Fixed
+- PROJECT_NOTICE (EN/TH): the note that automated bots are not the maintainer now names Teemate on GitHub Discussions as well as GET IDEAS on GitHub Issues.
+
+### Checks run for this release
+- `pytest`: 603 passed, 5 skipped (real speech and real model runs, opt-in), Python 3.13, CPU only.
+
 ## v0.18.0 (2026-11-09)
 
 Stable release, promoting v0.18.0-rc2. Tagentic1 and its Telegram bot remain beta; this release makes no new benchmark or model-quality claims.
