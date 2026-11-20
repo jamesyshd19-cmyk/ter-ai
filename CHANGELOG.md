@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## v0.18.1 (2026-11-20)
+
+Patch release. Documentation and version metadata only; no code path, model or Telegram bot behaviour changes, and no new benchmark or model-quality claims.
+
+### Changed
+- Package version `0.18.1`, matching the `v0.18.1` release tag (`pyproject.toml`, `terai_router.__version__`, `uv.lock`).
+- README (EN/TH) and the Tagentic1 `Systemprompt.md` name v0.18.1 as the latest release.
+- Discussion forms use `v0.18.1` as the example version instead of `v0.18.0-rc1`.
+
+### Fixed
+- PROJECT_NOTICE (EN/TH): the note that automated bots are not the maintainer now names Teemate on GitHub Discussions as well as GET IDEAS on GitHub Issues.
+
+### Checks run for this release
+- `pytest`: 603 passed, 5 skipped (real speech and real model runs, opt-in), Python 3.13, CPU only.
+
 ## v0.18.0 (2026-11-09)
 
 Stable release, promoting v0.18.0-rc2. Tagentic1 and its Telegram bot remain beta; this release makes no new benchmark or model-quality claims.

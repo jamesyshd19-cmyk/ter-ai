@@ -23,7 +23,7 @@ This is an advance notice. TER-AI is an indie project run by one person, so it c
 - **Urgent reports wait:** during that time, a complaint, legal notice, security report, takedown request, platform report or any other urgent contact may not be read, answered or acted on until the maintainer is home. The delay can be long.
 - **Urgent action comes first:** if a report needs urgent action, the maintainer may close, suspend or take down the affected part, or the whole project, as soon as he has access. This can happen without an in-depth review of the report and without a full explanation.
 - **No guarantees:** there is no guaranteed response time and no guarantee of service continuity.
-- **The issue bot is not the maintainer:** an automated bot (GET IDEAS) may still reply to GitHub Issues while the maintainer is away. The bot is not the maintainer. It does not receive or handle legal notices, security reports or takedown requests. A reply from the bot does not mean the maintainer has seen the issue.
+- **The bots are not the maintainer:** automated bots may still reply while the maintainer is away: GET IDEAS on GitHub Issues, and Teemate in the Tagentic telegram bot community on GitHub Discussions. The bots are not the maintainer. It does not receive or handle legal notices, security reports or takedown requests. A reply from a bot does not mean the maintainer has seen the issue or discussion.
 
 ## Cost and free services
 

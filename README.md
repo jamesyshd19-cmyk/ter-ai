@@ -27,7 +27,7 @@ The wider project also includes local chat, Thai speech, SVG graphics and music 
 
 The repository version and the model versions are separate. MuML 1.0 was the first model with its own id (v0.15.0); v0.16.0 writes the scheme down for every model.
 
-- **Repository (package) version:** `0.X.Y`; the latest release is v0.18.0 (PEP 440 package version `0.18.0`; the previous release candidate was v0.18.0-rc2). It moves with every release. The criteria for the repository's own 1.0 are unchanged (see Roadmap).
+- **Repository (package) version:** `0.X.Y`; the latest release is v0.18.1 (PEP 440 package version `0.18.1`; a patch release on top of v0.18.0). It moves with every release. The criteria for the repository's own 1.0 are unchanged (see Roadmap).
 - **Model id:** each model has its own name and version, written exactly as below. A package release never changes a model id, and the "1.0" in a model id is not the repository's 1.0.
 
 | Model id | What it is | Since |
@@ -39,7 +39,7 @@ The repository version and the model versions are separate. MuML 1.0 was the fir
 | Temmo 1.0 | Small indie game maker (prototype, not released) | - |
 | TER-AI-0.5 | Intent model inside TERM AI (limited-time trial) | v0.14.0 |
 
-`terai --version` prints both, for example `terai-router 0.18.0 / model TERAI1`, and `terai models` lists every model id. The rule lives in `src/terai_router/versions.py`; a new version of one model changes only its own row there. Model ids keep their spelling; the one exception is the v0.17.0 rename of TERAI1BETA to TERAI1 ("beta" is its status, not part of its name). `--brain terai1beta` and `--engine terai1beta` still work and print a deprecation notice. TERAI1SML is currently an unreleased prototype on `main`; it is not included in v0.18.0. After installing the current source, select it with `terai chat --brain terai1sml`; install its text-only weights with `terai chat --brain terai1sml --setup`.
+`terai --version` prints both, for example `terai-router 0.18.1 / model TERAI1`, and `terai models` lists every model id. The rule lives in `src/terai_router/versions.py`; a new version of one model changes only its own row there. Model ids keep their spelling; the one exception is the v0.17.0 rename of TERAI1BETA to TERAI1 ("beta" is its status, not part of its name). `--brain terai1beta` and `--engine terai1beta` still work and print a deprecation notice. TERAI1SML is currently an unreleased prototype on `main`; it is not included in v0.18.0. After installing the current source, select it with `terai chat --brain terai1sml`; install its text-only weights with `terai chat --brain terai1sml --setup`.
 
 ## Why the name
 
