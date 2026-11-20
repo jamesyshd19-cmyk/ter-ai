@@ -4,9 +4,20 @@
 
 This is an advance notice. TER-AI is an indie project run by one person, so it can stop with little or no warning.
 
+Last updated: 2026-11-20 (latest release v0.18.1).
+
+## Current state
+
+- **Repository:** [klanarongz2009-sketch/ter-ai](https://github.com/klanarongz2009-sketch/ter-ai) (renamed from `terai-router`; old links redirect). The Python package is still named `terai-router`.
+- **Tagentic1 (beta):** the TER-AI thinking + agentic model, running on local Gemma 4 E2B. It is beta and can be wrong.
+- **Telegram bot [@Terai_F0_bot](https://t.me/Terai_F0_bot) (beta):** a Tagentic1 bot hosted by the maintainer. Public chats get a restricted mode: the shared knowledge file only, a few safe tools, rate limits, and no access to the maintainer's private files or to commands on the host machine. Anyone can also run their own bot with their own token ([setup guide](docs/TAGENTIC_TELEGRAM.md)).
+- **Knowledge-inbox and fact checking:** facts sent with `/add` go to `Knowledge-inbox.md` first. Tagentic1 uses a fact only after it is checked against a real source (by a fact-checking AI agent run for the maintainer) and moved to `Knowledge.md`. Secrets, phone numbers, card numbers and email addresses are refused. Checking can be delayed while the maintainer is away or the agent's free credits run out.
+- **Community and support bot:** questions, bug reports and ideas about the bot go to the [Tagentic telegram bot community](https://github.com/klanarongz2009-sketch/ter-ai/discussions/categories/tagentic-telegram-bot-community) on GitHub Discussions. The automated support bot Teemate may answer there first.
+- **Response times:** the maintainer is a boarding-school student and is often away for long periods (see [Maintainer availability and urgent reports](#maintainer-availability-and-urgent-reports)). The hosted bot and the automated replies can stop at any time.
+
 ## Why the project may pause or close
 
-- **Paused while the maintainer is at boarding school (personal reasons):** the maintainer is a boarding-school student and starts school around November 2, 2026. While at school, he is not allowed to use a phone or personal devices. Maintainer replies, updates and releases stop during that time and resume only when he is home. See [Maintainer availability and urgent reports](#maintainer-availability-and-urgent-reports).
+- **Paused while the maintainer is at boarding school (personal reasons):** the maintainer is a boarding-school student and has been at school since around November 2, 2026. While at school, he is not allowed to use a phone or personal devices. Maintainer replies, updates and releases stop during that time and resume only when he is home. See [Maintainer availability and urgent reports](#maintainer-availability-and-urgent-reports).
 - **Closed without a stated reason:** the project may close without an explanation.
 - **A legal claim about models or data:** some optional models and data used by TER-AI have their own licenses (see the [license table](README.md#license) and [NOTICE](NOTICE)). If there is a legal claim about any of them, the affected part, or the whole project, may be taken down.
 - **Generated music that sounds like a real song:** MUML 1.0 HIQ and MuML 1.0 WA make new music from a prompt, but output can happen to sound close to an existing song (melody, lyrics or style). If a rights holder files a claim, the music features, the demo, or the whole project may be taken down.
@@ -39,9 +50,10 @@ TER-AI has no budget. Everything it uses is free today, so a change in any free 
 Depending on the reason, some or all of these may happen:
 
 - **The repository is archived (read-only) or deleted.** If it is deleted, `pip install git+https://github.com/klanarongz2009-sketch/ter-ai.git` stops working.
+- **The hosted Telegram bot stops:** @Terai_F0_bot may go offline or be shut down, and the shared knowledge file may stop being updated.
 - **The live demo goes offline:** https://klanarongz2009-sketch.github.io/ter-ai/ may stop working.
 - **Releases and the wiki** may be removed or stop being updated.
-- **Issues and pull requests are closed.** Automatic replies to issues stop.
+- **Issues and pull requests are closed.** Automatic replies to issues and discussions stop.
 - **No more updates or security fixes,** including for versions you already have.
 - **A part may be removed on its own:** after a claim, only the affected feature (for example MUML 1.0 HIQ) may be taken out, and the rest may stay.
 - **Model downloads may break:** commands that download weights (such as `terai muml --hiq --setup` or the first TTH run) depend on other hosts and may fail.

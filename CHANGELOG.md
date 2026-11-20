@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Changed
+- PROJECT_NOTICE (EN/TH) brought up to date: a new "Current state" section (repository name ter-ai, Tagentic1 beta, the hosted Telegram bot @Terai_F0_bot and its restricted public mode, Knowledge-inbox with fact checking before `Knowledge.md`, the Tagentic telegram bot community with Teemate, response-time limits), present-tense wording for the maintainer's school period, and the hosted bot added to what happens when the project closes.
+
 ## v0.18.1 (2026-11-20)
 
 Patch release. Documentation and version metadata only; no code path, model or Telegram bot behaviour changes, and no new benchmark or model-quality claims.
