@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+- Correction to the v0.18.0 notes: they say optional Pillow is now 13.0.0, but `uv.lock` in v0.18.0 and v0.18.1 still pins Pillow 12.3.0. The Pillow 13.0.0 update is open as dependabot pull request #17 and is not merged.
+
 ### Changed
 - PROJECT_NOTICE (EN/TH) brought up to date: a new "Current state" section (repository name ter-ai, Tagentic1 beta, the hosted Telegram bot @Terai_F0_bot and its restricted public mode, Knowledge-inbox with fact checking before `Knowledge.md`, the Tagentic telegram bot community with Teemate, response-time limits), present-tense wording for the maintainer's school period, and the hosted bot added to what happens when the project closes.
 
