@@ -224,6 +224,67 @@ def read_rewrite(obj: Optional[dict], ls: LineSpec) -> str:
     return str(obj.get('answer') or '').strip('\n')
 
 
+# ------------------------------------------------------------------------------------------ word repair
+# Issue #18, second slip: in word-list mode the model wrote the word `videos)"` as the JSON string "videos)" -- the
+# quote that belongs to the word closed the JSON string instead of being written as \". Every seed and every rewrite
+# lost it, while a plain-text answer keeps it. When a line already has the right number of words and only some fixed
+# words differ, the model writes just those words again, in plain text, one character per line (no JSON, so no
+# escaping), and the code puts each word the model wrote back at its position. The code still writes no character
+# of a word itself: a word the model gets wrong again stays as the model wrote it.
+WORD_OPEN, WORD_CLOSE = '\u27e6', '\u27e7'   # ⟦ ⟧: brackets that do not occur in ordinary text
+REPAIR_MAX = 6                              # at most this many wrong words are repaired one by one
+_WRAPPED = re.compile(WORD_OPEN + '([^' + WORD_OPEN + WORD_CLOSE + '\n]*)' + WORD_CLOSE)
+
+REPAIR_SYSTEM = 'You copy characters exactly, one character per line, nothing else.'
+
+
+def repair_mode(ls: LineSpec, issue: Issue, line: str) -> bool:
+    """True when the line has the right word count and only a few fixed words differ: repair those words alone."""
+    return (words_mode(ls) and len(line.split()) == ls.words and 0 < len(issue.words) <= REPAIR_MAX
+            and all(got for _, _, got in issue.words))
+
+
+_CHAR_NAMES = {'"': 'straight double quote', "'": 'straight single quote', '(': 'opening parenthesis',
+               ')': 'closing parenthesis', ':': 'colon', ',': 'comma', '-': 'hyphen', '\u2014': 'em dash',
+               '.': 'full stop', '/': 'slash', '_': 'underscore'}
+
+
+def word_hint(line_no: int, pos: int, want: str, got: str) -> str:
+    """The note that asks the model to write one word again, one character per line (plain text, never JSON).
+
+    Issue #18: asked for the whole word `videos)"` (in JSON, or in plain text between brackets) the local model
+    dropped the closing quote on nearly every seed; asked for its characters one per line, with the punctuation
+    named, it kept all of them on every seed tried. The note does not show what the model wrote before: with
+    'you wrote 7 characters' in it, the model wrote the same 7 again on every seed. ``got`` is kept for the trace."""
+    chars = '\n'.join(f'{c}   [{_CHAR_NAMES[c]}]' if c in _CHAR_NAMES else c for c in want)
+    return (f'Word {pos} of line {line_no}. Copy these {len(want)} characters one per line, exactly, nothing else. '
+            'A name in brackets after a character only says which character it is: do not copy the name.\n'
+            f'{chars}')
+
+
+def read_word(raw: str) -> str:
+    """The word the model wrote: its characters one per line, joined in order. A reply that is not one character
+    per line may still hold the word between WORD_OPEN and WORD_CLOSE. '' when neither gives one word."""
+    rows = [r for r in (raw or '').strip('\n').split('\n')]
+    if rows and all(len(r) == 1 and not r.isspace() for r in rows):
+        return ''.join(rows)
+    m = _WRAPPED.search(raw or '')
+    if not m:
+        return ''
+    word = m.group(1)
+    return word if word and word == word.strip() and len(word.split()) == 1 else ''
+
+
+def put_words(line: str, words: dict) -> str:
+    """``line`` with the words at the given 1-based positions replaced by the model's words, one space between
+    words (word-list mode: the spaces are the code's, every character of a word is the model's)."""
+    parts = line.split()
+    for pos, word in words.items():
+        if word and 0 < pos <= len(parts):
+            parts[pos - 1] = word
+    return ' '.join(parts)
+
+
 REWRITE_SYSTEM = ('You rewrite one line of a text so that it matches its specification exactly. '
                   'Reply with one JSON object: {"think": "...", "tool": "final", "answer": "<the line>"}, or, when '
                   'asked for a list of words, {"think": "...", "tool": "final", "words": ["...", "..."]}.')

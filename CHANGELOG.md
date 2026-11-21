@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## v0.18.3 (2026-11-21)
+
+Patch release on top of v0.18.2. Tagentic1 is still a beta. Fixes issue #18.
+
+### Fixed
+- Tagentic1 verbatim tasks (issue #18): the closing double quote of `"AI music playlist (7 videos)"` on line 6 of the issue's specification was dropped in every rewrite round of v0.18.2, which ended at 1,086 of 1,087 characters. Diagnosis: the code that joins a word list keeps every character of every word (the word `videos)"` passed through JSON parsing intact in tests); the model itself left the quote out of that one word, both in the JSON word list and when asked for the word as plain text. When a line already has the right number of words and only a few specified words differ, the line check now asks the model to write just those words again, one character per line with punctuation named (for example `"   [straight double quote]`), and puts each word the model wrote back at its position. The note does not show the model its earlier wrong word: with it, the model repeated the 7-character word on every seed tried. As before, the code never writes a character of a word itself; a word the model still gets wrong stays as the model wrote it.
+- Re-run of the issue #18 specification with the local Tagentic1 model (context 16384), seeds 0, 1 and 2: 1,087 of 1,087 characters and 12 of 12 lines on each seed (v0.18.2: 1,086 of 1,087, 11 of 12 lines).
+
+### Added
+- `tests/test_tagentic_verbatim.py`: regression tests for a quote and a bracket attached to the last word of a quoted group at the end of a line: the specification keeps them on the word, the check flags the lost quote, the word repair restores it only when the model writes it, and the repair is plain text (no JSON schema).
+
+### Changed
+- Package version `0.18.3`, matching the `v0.18.3` release tag (`pyproject.toml`, `terai_router.__version__`, `uv.lock`); README (EN/TH), PROJECT_NOTICE (EN/TH), the Tagentic1 `Systemprompt.md` and the Telegram bot discussion templates name v0.18.3 as the latest release.
+- Since v0.18.2, `main` also has documentation commits: copyright 2026-2027 and a date-neutral TERM AI countdown example, and the remaining user-facing `terai-router` names changed to ter-ai (the Python package name `terai-router` is unchanged).
+
 ## v0.18.2 (2026-11-21)
 
 Patch release on top of v0.18.1. Tagentic1 is still a beta.

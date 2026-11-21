@@ -219,6 +219,10 @@ class Tagentic:
                 if spec.lines[issue.line].blank:
                     rows[issue.line - 1] = ''   # a specified blank line: nothing for the model to write
                     continue
+                line = rows[issue.line - 1]
+                if V.repair_mode(spec.lines[issue.line], issue, line):
+                    rows[issue.line - 1] = self._repair_words(issue, line, rnd)
+                    continue
                 # a short system message: the rewrite needs only this line and its specification
                 ask = [{'role': 'system', 'content': V.REWRITE_SYSTEM},
                        {'role': 'user', 'content': V.line_hint(issue, spec, rows[issue.line - 1])}]
@@ -234,6 +238,25 @@ class Tagentic:
                     rows[issue.line - 1] = new
             answer = '\n'.join(rows)
         return answer
+
+    def _repair_words(self, issue: 'V.Issue', line: str, rnd: int) -> str:
+        """Ask the model to write each wrong word of a line again, in plain text (no JSON: a word's quote needs no
+        escape, issue #18), and put the words it wrote back at their positions."""
+        got = {}
+        seed = self.seed
+        for pos, want, wrong in issue.words:
+            ask = [{'role': 'system', 'content': V.REPAIR_SYSTEM},
+                   {'role': 'user', 'content': V.word_hint(issue.line, pos, want, wrong)}]
+            if seed is not None:
+                self.seed = seed + rnd
+            try:
+                raw = self.lm.chat(ask, max_tokens=32 + 4 * len(want), temperature=self.temperature, seed=self.seed)
+            finally:
+                self.seed = seed
+            word = V.read_word(raw)
+            if word:
+                got[pos] = word
+        return V.put_words(line, got)
 
     def _loop(self, task: str, messages: list, trace: Trace, base: int, t0: float) -> RunResult:
         schema = step_schema(self.tools.names)

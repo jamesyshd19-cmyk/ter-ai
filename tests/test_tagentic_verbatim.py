@@ -145,3 +145,76 @@ def test_agent_no_check_for_normal_task(tmp_path):
     assert not [s for s in res.trace.steps if s.tool == 'verbatim_check']
     assert lm.calls[0]['max_tokens'] < 2048
 
+
+
+# ---- issue #18, second slip: a quote attached to the last word of a quoted group ("... (7 videos)") was lost ----
+QL = '- ผมแก้กลับเป็น "AI music playlist (7 videos)" แล้ว'
+QL_BAD = QL.replace('videos)"', 'videos)')
+QSPEC = f"""Write the text below exactly. It has 1 lines.
+
+Line 1 ({len(QL.split())} words, {len(QL)} characters): the name was changed back.
+  - Word 1: `-`
+  - Word 2: built by joining `ผม` + `แก้` + `กลับ` + `เป็น`
+  - Words 3-7: `"AI music playlist (7 videos)"` (closing parenthesis then closing quote)
+  - Word 8: `แล้ว`
+"""
+
+
+def test_spec_keeps_quote_and_bracket_on_words():
+    ls = V.parse_spec(QSPEC).lines[1]
+    assert ls.expected[3] == '"AI' and ls.expected[7] == 'videos)"' and V.words_mode(ls)
+
+
+def test_check_flags_lost_trailing_quote():
+    spec = V.parse_spec(QSPEC)
+    assert V.check(QL, spec) == []
+    (i,) = V.check(QL_BAD, spec)
+    assert i.words == [(7, 'videos)"', 'videos)')] and i.got_chars == i.want_chars - 1
+    assert V.repair_mode(spec.lines[1], i, QL_BAD)
+
+
+def test_read_rewrite_keeps_escaped_quote():
+    ls = V.parse_spec(QSPEC).lines[1]
+    obj = json.loads(json.dumps({'think': 't', 'tool': 'final', 'words': QL.split(' ')}, ensure_ascii=False))
+    assert V.read_rewrite(obj, ls) == QL
+
+
+def test_read_word_and_put_words():
+    assert V.read_word('v\ni\nd\ne\no\ns\n)\n"') == 'videos)"'   # one character per line
+    assert V.read_word('v\ni\nd\ne\no\ns\n)\n') == 'videos)'    # the model's characters only: no quote added
+    assert V.read_word('\u27e6videos)"\u27e7') == 'videos)"'
+    assert V.read_word('word: \u27e6เป็น,\u27e7 done') == 'เป็น,'
+    assert V.read_word('videos)"') == ''              # no brackets: nothing taken
+    assert V.read_word('\u27e6two words\u27e7') == ''  # not one word
+    assert V.read_word('\u27e6\u27e7') == ''
+    assert V.put_words(QL_BAD, {7: 'videos)"'}) == QL
+    assert V.put_words('a  b', {}) == 'a b'
+
+
+def test_agent_repairs_trailing_quote_word_in_plain_text(tmp_path):
+    lm = ScriptLM([_final(QL_BAD), 'v\ni\nd\ne\no\ns\n)\n"'])
+    res = _agent(tmp_path, lm).run(QSPEC)
+    assert res.final == QL
+    repair = lm.calls[1]
+    assert repair.get('json_schema') is None                 # plain text: the quote needs no JSON escape
+    note = repair['messages'][-1]['content']
+    assert note.endswith('v\ni\nd\ne\no\ns\n)   [closing parenthesis]\n"   [straight double quote]')
+    assert 'videos)\n' not in note.split('\n', 1)[0]           # what the model wrote before is not shown
+
+
+def test_agent_repair_never_adds_the_quote_itself(tmp_path):
+    lm = ScriptLM([_final(QL_BAD)] + ['\u27e6videos)\u27e7'] * VERBATIM_ROUNDS)
+    res = _agent(tmp_path, lm).run(QSPEC)
+    assert res.final == QL_BAD                               # the model never wrote the quote: the code adds none
+    checks = [s for s in res.trace.steps if s.tool == 'verbatim_check']
+    assert len(checks) == VERBATIM_ROUNDS + 1 and not checks[-1].ok
+
+
+def test_agent_repairs_after_word_list_rewrite(tmp_path):
+    words = json.dumps({'think': 'l', 'tool': 'final', 'words': QL_BAD.split(' ')}, ensure_ascii=False)
+    short = QL_BAD.replace(' แล้ว', 'แล้ว')                      # one word short: full word-list rewrite first
+    lm = ScriptLM([_final(short), words, '\u27e6videos)"\u27e7'])
+    res = _agent(tmp_path, lm).run(QSPEC)
+    assert res.final == QL
+    assert lm.calls[1]['json_schema']['properties']['words']['minItems'] == 8
+    assert lm.calls[2].get('json_schema') is None

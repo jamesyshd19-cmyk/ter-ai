@@ -29,7 +29,7 @@ body:
     attributes:
       label: TER-AI version
       description: Output of `terai --version`, or the release tag you installed.
-      placeholder: v0.18.2
+      placeholder: v0.18.3
     validations:
       required: false
   - type: input
