@@ -12,6 +12,15 @@ replies and no output guard. Identity is set by Systemprompt.md only.
 
 A session keeps the conversation (user lines and final answers) in ``history``. The first turn of a session is the
 model's own greeting, asked for with the ``[session_start]`` event described in Systemprompt.md.
+
+Verbatim tasks (issue #18): when the task gives a line-by-line specification with word and character counts
+("Line 6 (23 words, 156 characters): ..."), the final answer is checked line by line (``verbatim.check``). A line
+that differs is sent back to the model with what is wrong, and the model writes that line again (at most
+``VERBATIM_ROUNDS`` rounds, with a short system message that holds only that line's specification; where the
+specification fixes every word, the words are listed whole, with "built by joining `a` + `b`" already read as ``ab``, and the model answers that line as a list of its words, which the code joins with one
+space each). Every character of every word is the model's own; the check never edits a word, so a line the model
+still gets wrong stays as the model wrote it. The check shows in the trace as tool
+``verbatim_check``.
 """
 from __future__ import annotations
 
@@ -22,6 +31,7 @@ from dataclasses import dataclass, field
 from typing import Callable, Optional
 
 from . import memory as M
+from . import verbatim as V
 from .context import workspace_context
 from .tools import PendingAction, Toolbox
 from .trace import NOTE_MAX, THINK_MAX, Step, Trace, shorten
@@ -31,6 +41,9 @@ OBS_OLD = 400           # older outputs are cut to this when the history grows
 HISTORY_BUDGET = 9000   # characters of step history before older outputs are cut
 STEP_TOKENS = 700
 SESSION_START = '[session_start]'   # event message (model input only) that opens a session
+VERBATIM_TOKENS = 2048  # tokens for a step when the task is a verbatim line specification (the whole text is one answer)
+VERBATIM_ROUNDS = 4     # rounds of line rewrites after the verbatim check
+VERBATIM_MAX_LINES = 40  # more wrong lines than this: no line rewrites
 
 
 def step_schema(tools: list) -> dict:
@@ -100,6 +113,7 @@ class Tagentic:
         self.files = files
         self.clock = clock
         self.last: Optional[RunResult] = None
+        self._tokens = STEP_TOKENS
 
     def system_prompt(self) -> str:
         public = bool(getattr(self.tools, 'public', False))
@@ -120,7 +134,7 @@ class Tagentic:
     # ----------------------------------------------------------------------------------------------- model
     def _ask(self, messages: list, schema: dict) -> str:
         # stop_on_json: generation ends at the closing brace of the step object (no trailing tokens)
-        return self.lm.chat(messages, max_tokens=STEP_TOKENS, temperature=self.temperature, seed=self.seed,
+        return self.lm.chat(messages, max_tokens=self._tokens, temperature=self.temperature, seed=self.seed,
                             json_schema=schema, stop_on_json=True)
 
     @staticmethod
@@ -174,8 +188,57 @@ class Tagentic:
         messages.append({'role': 'user', 'content': f'ผลจาก {tool} ({"ok" if res.ok else "error"}):\n{out}'})
         self._compress(messages, base)
 
+    def _verbatim_pass(self, answer: str, spec: 'V.Spec', messages: list, trace: Trace) -> str:
+        """Check a verbatim answer line by line; ask the model to write each wrong line again (issue #18)."""
+        for rnd in range(VERBATIM_ROUNDS + 1):
+            issues = V.check(answer, spec)
+            want = sum(1 for _ in spec.lines)
+            ok = want - len(issues)
+            if not issues:
+                note = f'{ok}/{want} lines match the specification'
+            elif rnd == VERBATIM_ROUNDS or len(issues) > VERBATIM_MAX_LINES:
+                note = (f'{ok}/{want} lines match; still different: '
+                        + ', '.join(f'line {i.line}' for i in issues) + ' (kept as the model wrote them)')
+            else:
+                note = f'{ok}/{want} lines match; rewrite ' + ', '.join(f'line {i.line}' for i in issues)
+            step = trace.add(Step(step=len(trace.steps) + 1, think='เช็กคำตอบกับ spec ทีละบรรทัด',
+                                  tool='verbatim_check', args={'round': rnd + 1}, ok=not issues,
+                                  note=shorten(note, NOTE_MAX), ms=0))
+            if self.on_step:
+                self.on_step(step)
+            if not issues or rnd == VERBATIM_ROUNDS or len(issues) > VERBATIM_MAX_LINES:
+                return answer
+            rows = answer.split('\n')
+            if spec.total:
+                rows = rows[:spec.total]   # the specification states the line count: lines past it are dropped
+            while len(rows) < max(spec.lines):
+                rows.append('')
+            for issue in issues:
+                if issue.line > len(rows):
+                    continue
+                if spec.lines[issue.line].blank:
+                    rows[issue.line - 1] = ''   # a specified blank line: nothing for the model to write
+                    continue
+                # a short system message: the rewrite needs only this line and its specification
+                ask = [{'role': 'system', 'content': V.REWRITE_SYSTEM},
+                       {'role': 'user', 'content': V.line_hint(issue, spec, rows[issue.line - 1])}]
+                seed = self.seed
+                if seed is not None:
+                    self.seed = seed + rnd   # a new seed each round: the same prompt and seed give the same line
+                try:
+                    raw = self._ask(ask, V.rewrite_schema(spec.lines[issue.line], FINAL_SCHEMA))
+                finally:
+                    self.seed = seed
+                new = V.read_rewrite(parse_step(raw), spec.lines[issue.line])
+                if new and '\n' not in new:
+                    rows[issue.line - 1] = new
+            answer = '\n'.join(rows)
+        return answer
+
     def _loop(self, task: str, messages: list, trace: Trace, base: int, t0: float) -> RunResult:
         schema = step_schema(self.tools.names)
+        spec = V.parse_spec(task)
+        self._tokens = VERBATIM_TOKENS if spec else STEP_TOKENS
         stopped, answer, bad_json = '', '', 0
         while True:
             if self.clock() - t0 > self.timeout:
@@ -224,6 +287,11 @@ class Tagentic:
             why = f'ครบ {self.max_steps} steps' if stopped == 'max_steps' else f'ครบเวลา {self.timeout:g} วินาที'
             answer, _ = self._final(messages, task, f'หยุดใช้ tool แล้ว ({why}) บอกผู้ใช้ว่างานหยุดเพราะอะไร '
                                                     'สรุปสิ่งที่ทำได้และสิ่งที่ยังไม่เสร็จจากผล tool ที่มี ตอบเป็น JSON tool="final"')
+        if spec and stopped == 'answer' and answer:
+            answer = self._verbatim_pass(answer, spec, messages, trace)
+            if messages and messages[-1]['role'] == 'assistant':
+                messages[-1] = {'role': 'assistant', 'content': json.dumps(
+                    {'think': 'verbatim', 'tool': 'final', 'answer': answer}, ensure_ascii=False)}
         trace.final, trace.stopped = answer, stopped
         trace.seconds = self.clock() - t0
         self.last = RunResult(final=answer, trace=trace, stopped=stopped, messages=messages)

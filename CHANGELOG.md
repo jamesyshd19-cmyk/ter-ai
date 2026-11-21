@@ -2,10 +2,26 @@
 
 ## Unreleased
 
+## v0.18.2 (2026-11-21)
+
+Patch release on top of v0.18.1. Tagentic1 is still a beta.
+
+### Added
+- Tagentic1: line check for verbatim (copy / text-return) tasks, for issue #18. When a task gives a line-by-line specification with word and character counts (for example "Line 6 (23 words, 156 characters)"), the agent checks the final answer line by line (new module `terai_router.tagentic.verbatim`, shown in the trace as `verbatim_check`). A line that does not match is sent back to the model with what is wrong, for up to 4 rounds; where the specification fixes every word of the line, the model answers that line as a list of its words and the code joins them with one space each. The check never changes a character of a word: a line the model still gets wrong stays as the model wrote it. Verbatim tasks also get a larger step budget (2048 tokens), since the whole text is one answer.
+- Tagentic1 memory files: a whitespace rule for verbatim tasks in `Systemprompt.md` and a new skill "5. verbatim-copy" in `Systemskill.md` (one space between every two specified words, Thai words included; never merge two Thai words the specification keeps apart).
+- `tests/test_tagentic_verbatim.py`: regression tests with the issue #18 case (`ระหว่างแก้ ชื่อ` written as `ระหว่างแก้ชื่อ`).
+
+### Known issue
+- Issue #18 stays open. On a re-run of the issue's own specification with the local model, the line check kept the space between `ระหว่างแก้` and `ชื่อ`, but the model still dropped one closing double quote on the same line, so the result was 1,086 of 1,087 characters, not an exact match.
+
 ### Fixed
-- Correction to the v0.18.0 notes: they say optional Pillow is now 13.0.0, but `uv.lock` in v0.18.0 and v0.18.1 still pins Pillow 12.3.0. The Pillow 13.0.0 update is open as dependabot pull request #17 and is not merged.
+- Correction to the v0.18.0 notes: they say optional Pillow is now 13.0.0, but `uv.lock` in v0.18.0 and v0.18.1 still pins Pillow 12.3.0.
+
+### Security
+- `uv.lock`: Pillow 12.3.0 -> 13.0.0 and Gradio 6.16.0 -> 6.32.0 (dependabot pull request #17, merged after v0.18.1).
 
 ### Changed
+- Package version `0.18.2`, matching the `v0.18.2` release tag (`pyproject.toml`, `terai_router.__version__`, `uv.lock`); README (EN/TH), PROJECT_NOTICE (EN/TH), the Tagentic1 `Systemprompt.md` and the Telegram bot discussion templates name v0.18.2 as the latest release.
 - PROJECT_NOTICE (EN/TH) brought up to date: a new "Current state" section (repository name ter-ai, Tagentic1 beta, the hosted Telegram bot @Terai_F0_bot and its restricted public mode, Knowledge-inbox with fact checking before `Knowledge.md`, the Tagentic telegram bot community with Teemate, response-time limits), present-tense wording for the maintainer's school period, and the hosted bot added to what happens when the project closes.
 
 ## v0.18.1 (2026-11-20)
