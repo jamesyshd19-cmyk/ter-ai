@@ -2,24 +2,37 @@
 
 [Thai version](README.th.md)
 
-An offline-first Thai AI toolkit. Start with the typo-tolerant intent router: give it one Thai or Thai-English message and it returns one of 15 intents.
+**An offline Thai intent router in 1.1 MB: it reads one Thai or Thai-English message, fixes common typos, and returns one of 15 intents with a confidence score. CPU only, no runtime dependencies, no network.**
 
-**Router:** 1.1 MB · CPU · no runtime dependencies · works offline
+[Try it in the browser](https://klanarongz2009-sketch.github.io/ter-ai/) · [Contributing](CONTRIBUTING.md) · [Good first issues](https://github.com/klanarongz2009-sketch/ter-ai/labels/good%20first%20issue) · [Project wiki on Wikova](https://wikova.com/wiki/EBGZvnu1)
 
-[Try the web demo](https://klanarongz2009-sketch.github.io/ter-ai/) · [Browse the repository](https://github.com/klanarongz2009-sketch/ter-ai) · [Project wiki on Wikova](https://wikova.com/wiki/EBGZvnu1)
+<p align="center"><img src="https://raw.githubusercontent.com/klanarongz2009-sketch/ter-ai/main/docs/assets/router-demo.svg" width="760" alt="Terminal: four Thai messages with typos, each classified with intent, confidence and normalized text"></p>
 
-```console
-$ python examples/basic.py
-เส็ดหรือยัง               -> status    1.00  normalized: เสร็จหรือยัง
-```
-
-This example was run against the current source. To install the package and try the CLI, use Python 3.11 or newer:
+## Quickstart (Python 3.11+)
 
 ```bash
 pip install git+https://github.com/klanarongz2009-sketch/ter-ai.git
+terai "เส็ดหรือยัง"
+python -c "from terai_router import route; print(route('ช้วยบวก 15+27 หน้อย')['intent'])"
 ```
 
-The wider project also includes local chat, Thai speech, SVG graphics and music tools; some optional components download models or use online services. See the sections below for exact offline scope, current release status, model/data licenses and limitations. Code and optional model/data licenses differ; check the [license table](#license) before commercial use.
+| Input (typos kept as typed) | Intent | Confidence | Normalized text |
+|---|---|---|---|
+| `เส็ดหรือยัง` | `status` | 1.00 | `เสร็จหรือยัง` |
+| `ช้วยบวก 15+27 หน้อย` | `calc` | 1.00 | `ช่วยบวก 15+27 หน้อย` |
+| `help me หน่อย` | `help` | 0.99 | `help me หน่อย` |
+| `พิมพิด แก้ใหม่` | `fix` | 1.00 | `พิมพ์ผิด แก้ใหม่` |
+| `ไม่เอาแล้ว` | `refuse` | 1.00 | `ไม่เอาแล้ว` |
+
+These rows are real output of `terai "<text>"` on v0.18.3. The 15 intents are `calc`, `fix`, `forget`, `get_name`, `go_on`, `greet`, `help`, `random`, `refuse`, `set_name`, `stats`, `status`, `thanks`, `time` and `who`.
+
+**Measured:** 97.6% (121/124) on the frozen 124-sentence test set and 99.1% (111/112) on the held-out set, about 0.2 ms per message on one CPU thread (`python training/evaluate.py`). The three test-set misses are English name/number questions. This is an internal evaluation, not an independent benchmark; details in [Results](#results-v0160-measured-2026-10-22).
+
+Use it as the first step of a Thai chatbot, a voice command, or an IoT switch: route the message, then run your own handler for that intent. Examples: `examples/basic.py`, `examples/bot_router.py`, `examples/iot_switch.py`.
+
+### Also in this repository (secondary)
+
+The wider project also includes local chat, Thai speech (TTH), SVG graphics (SANKPUP) and music tools (MuML); some optional components download models or use online services. See the sections below for exact offline scope, current release status, model/data licenses and limitations. Code and optional model/data licenses differ; check the [license table](#license) before commercial use.
 
 > **Project notice:** TER-AI is an indie project and may pause or close with little warning. Read the [project notice](PROJECT_NOTICE.md).
 

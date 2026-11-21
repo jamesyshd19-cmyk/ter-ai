@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="372" viewBox="0 0 860 372" role="img" aria-labelledby="t d">
+<title id="t">TER-AI intent router in a terminal</title>
+<desc id="d">Four Thai and Thai-English messages with typos are classified offline. Each line shows the intent, the confidence and the normalized text.</desc>
+<style>
+  .bg { fill:#0b1220; }
+  .bar { fill:#131d30; }
+  .dot1 { fill:#ee6b6b; } .dot2 { fill:#f2c14e; } .dot3 { fill:#5fd38d; }
+  text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", "Noto Sans Thai", "Noto Sans Mono", monospace; font-size:17px; }
+  .title { fill:#8b9ab3; font-size:13px; }
+  .p { fill:#70e1c1; }
+  .cmd { fill:#edf3fb; }
+  .q { fill:#ffc76b; }
+  .intent { fill:#83a9ff; font-weight:700; }
+  .conf { fill:#5fd38d; }
+  .norm { fill:#c9d4e5; }
+  .note { fill:#8b9ab3; font-size:13px; }
+  .l { animation: show .35s ease-out both; }
+  .l1 { animation-delay:.2s } .l2 { animation-delay:.7s } .l3 { animation-delay:1.3s } .l4 { animation-delay:1.8s }
+  .l5 { animation-delay:2.4s } .l6 { animation-delay:2.9s } .l7 { animation-delay:3.5s } .l8 { animation-delay:4.0s }
+  .l9 { animation-delay:4.6s }
+  @keyframes show { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+  @media (prefers-reduced-motion: reduce) { .l { animation:none; } }
+</style>
+<rect class="bg" width="860" height="372" rx="14"/>
+<path class="bar" d="M14 0h832a14 14 0 0 1 14 14v26H0V14A14 14 0 0 1 14 0z"/>
+<circle class="dot1" cx="24" cy="20" r="6"/><circle class="dot2" cx="44" cy="20" r="6"/><circle class="dot3" cx="64" cy="20" r="6"/>
+<text class="title" x="430" y="25" text-anchor="middle">terai: offline Thai intent router (CPU, no network)</text>
+
+<g class="l l1"><text x="28" y="78"><tspan class="p">$ </tspan><tspan class="cmd">terai </tspan><tspan class="q">"เส็ดหรือยัง"</tspan></text></g>
+<g class="l l2"><text x="28" y="106"><tspan class="intent">status</tspan><tspan class="conf" x="148">1.00</tspan><tspan class="norm" x="224">เสร็จหรือยัง</tspan></text></g>
+
+<g class="l l3"><text x="28" y="146"><tspan class="p">$ </tspan><tspan class="cmd">terai </tspan><tspan class="q">"ช้วยบวก 15+27 หน้อย"</tspan></text></g>
+<g class="l l4"><text x="28" y="174"><tspan class="intent">calc</tspan><tspan class="conf" x="148">1.00</tspan><tspan class="norm" x="224">ช่วยบวก 15+27 หน้อย</tspan></text></g>
+
+<g class="l l5"><text x="28" y="214"><tspan class="p">$ </tspan><tspan class="cmd">terai </tspan><tspan class="q">"help me หน่อย"</tspan></text></g>
+<g class="l l6"><text x="28" y="242"><tspan class="intent">help</tspan><tspan class="conf" x="148">0.99</tspan><tspan class="norm" x="224">help me หน่อย</tspan></text></g>
+
+<g class="l l7"><text x="28" y="282"><tspan class="p">$ </tspan><tspan class="cmd">terai </tspan><tspan class="q">"พิมพิด แก้ใหม่"</tspan></text></g>
+<g class="l l8"><text x="28" y="310"><tspan class="intent">fix</tspan><tspan class="conf" x="148">1.00</tspan><tspan class="norm" x="224">พิมพ์ผิด แก้ใหม่</tspan></text></g>
+
+<g class="l l9"><text class="note" x="28" y="350">columns: intent · confidence · normalized text — 15 intents, 1.1 MB model, CPU only</text></g>
+</svg>

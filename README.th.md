@@ -2,6 +2,34 @@
 
 [English README](README.md)
 
+**Intent router ภาษาไทยแบบ offline ขนาด 1.1 MB: อ่านข้อความภาษาไทยหรือไทยปนอังกฤษทีละข้อความ แก้คำพิมพ์ผิดที่เจอบ่อย แล้วบอกว่าเป็น intent ไหนใน 15 แบบ พร้อมคะแนนความมั่นใจ รันบน CPU ไม่ต้องลง library เพิ่ม ไม่ต่อเน็ต**
+
+[ลองในเบราว์เซอร์](https://klanarongz2009-sketch.github.io/ter-ai/) · [วิธีร่วมพัฒนา (อังกฤษ)](CONTRIBUTING.md) · [Good first issues](https://github.com/klanarongz2009-sketch/ter-ai/labels/good%20first%20issue)
+
+<p align="center"><img src="https://raw.githubusercontent.com/klanarongz2009-sketch/ter-ai/main/docs/assets/router-demo.svg" width="760" alt="ตัวอย่างใน terminal: ข้อความภาษาไทยที่พิมพ์ผิด 4 ข้อความ แต่ละข้อความได้ intent คะแนน และข้อความที่แก้แล้ว"></p>
+
+### เริ่มใช้ (Python 3.11 ขึ้นไป)
+
+```bash
+pip install git+https://github.com/klanarongz2009-sketch/ter-ai.git
+terai "เส็ดหรือยัง"
+python -c "from terai_router import route; print(route('ช้วยบวก 15+27 หน้อย')['intent'])"
+```
+
+| ข้อความที่พิมพ์ (คงคำผิดไว้) | Intent | คะแนน | ข้อความหลังแก้ |
+|---|---|---|---|
+| `เส็ดหรือยัง` | `status` | 1.00 | `เสร็จหรือยัง` |
+| `ช้วยบวก 15+27 หน้อย` | `calc` | 1.00 | `ช่วยบวก 15+27 หน้อย` |
+| `help me หน่อย` | `help` | 0.99 | `help me หน่อย` |
+| `พิมพิด แก้ใหม่` | `fix` | 1.00 | `พิมพ์ผิด แก้ใหม่` |
+| `ไม่เอาแล้ว` | `refuse` | 1.00 | `ไม่เอาแล้ว` |
+
+ทุกแถวเป็นผลจริงจาก `terai "<ข้อความ>"` บน v0.18.3 ส่วน 15 intent คือ `calc`, `fix`, `forget`, `get_name`, `go_on`, `greet`, `help`, `random`, `refuse`, `set_name`, `stats`, `status`, `thanks`, `time` และ `who`
+
+**ผลวัด:** 97.6% (121/124) บน test set แบบ frozen 124 ประโยค และ 99.1% (111/112) บน held-out set ใช้เวลาราว 0.2 ms ต่อข้อความบน CPU 1 thread (`python training/evaluate.py`) ข้อที่พลาด 3 ข้อใน test set เป็นคำถามภาษาอังกฤษเรื่องชื่อและตัวเลข ผลนี้เป็นการวัดภายในโปรเจกต์ ไม่ใช่ benchmark อิสระ
+
+ใช้เป็นขั้นแรกของ chatbot ภาษาไทย คำสั่งเสียง หรือสวิตช์ IoT ได้: ส่งข้อความเข้า router แล้วเรียก handler ของ intent นั้นเอง ตัวอย่างอยู่ที่ `examples/basic.py`, `examples/bot_router.py` และ `examples/iot_switch.py` ส่วนอื่นด้านล่าง (แชต, TTH, SANKPUP, MuML) เป็นส่วนเสริม
+
 > **ทดลองใช้แบบจำกัดเวลา: TERM AI ซึ่งเป็น Terminal AI ตัวดั้งเดิม กลับมาให้ลองถึง 2027-01-01 00:00:00 เวลาประเทศไทย (UTC+7)** ลองได้ด้วย `terai term` ([v0.14.0](https://github.com/klanarongz2009-sketch/ter-ai/releases/tag/v0.14.0), [ประกาศ](https://github.com/klanarongz2009-sketch/ter-ai/issues/6)) พอถึงเวลานั้นจะใช้ไม่ได้และถูกถอดออกจาก repo [รายละเอียด](#term-ai-ทดลองใช้แบบจำกัดเวลา)
 
 TER-AI เป็นโครงการวิจัยและพัฒนา AI ภาษาไทยแบบอิสระที่ใช้ AI agent ช่วยพัฒนา โดยทดลองตั้งแต่ typo-tolerant intent routing, local chat/vision บน CPU ไปจนถึง Thai TTS, SVG graphics และ music-generation tools โครงการเผยแพร่ test sets, evaluation scripts, parity/regression checks, ข้อจำกัดของแต่ละโมดูล, license แยกตามข้อมูล/โมเดล และ Project Notice เกี่ยวกับความต่อเนื่องของการดูแล
