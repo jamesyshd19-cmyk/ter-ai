@@ -231,4 +231,4 @@ terai tth --engine mtl --mtl-steps 32 "สวัสดีครับ" -o th32.w
 - **acestep.cpp และ yue2.cpp:** MIT build จาก source ตอน `--setup`
 - **edge-tts:** library เป็น LGPL-3.0 แต่ส่งข้อความไปที่บริการอ่านออกเสียงออนไลน์ของ Microsoft เสียงที่ได้ใช้ตามเงื่อนไขของ Microsoft
 
-Copyright (c) 2026 Klanarong Tammakatuek (klanarongz2009-sketch)
+Copyright (c) 2026-2027 Klanarong Tammakatuek (klanarongz2009-sketch)

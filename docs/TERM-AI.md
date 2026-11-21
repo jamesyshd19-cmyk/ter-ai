@@ -46,7 +46,7 @@ Example (the first line goes to stderr):
 
 ```
 $ terai term "คำนวณ (12+8)*3"
-TERM AI is a limited-time trial: it stops working at 2027-01-01 00:00:00 Asia/Bangkok (UTC+7) and will be removed from terai-router then (70 days left).
+TERM AI is a limited-time trial: it stops working at 2027-01-01 00:00:00 Asia/Bangkok (UTC+7) and will be removed from terai-router then (N days left).
 TERM AI> (12+8)*3 = 60
 ```
 

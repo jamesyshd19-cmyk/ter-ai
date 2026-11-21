@@ -1,6 +1,6 @@
 # TER-AI License 1.0
 
-Copyright (c) 2026 Klanarong Tammakatuek (klanarongz2009-sketch)
+Copyright (c) 2026-2027 Klanarong Tammakatuek (klanarongz2009-sketch)
 
 ## 1. What this License covers
 

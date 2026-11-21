@@ -560,7 +560,7 @@ TERM AI is the program TER-AI grew from, written on 2026-10-10 before this repos
 ```
 terai term                              # interactive; type ออก, exit or quit to end
 terai term "คำนวณ (12+8)*3"
-TERM AI is a limited-time trial: it stops working at 2027-01-01 00:00:00 Asia/Bangkok (UTC+7) and will be removed from terai-router then (70 days left).
+TERM AI is a limited-time trial: it stops working at 2027-01-01 00:00:00 Asia/Bangkok (UTC+7) and will be removed from terai-router then (N days left).
 TERM AI> (12+8)*3 = 60
 terai term --debug "ช่วยคิดเลข 3 คูณ 4"
 TERM AI> 3 * 4 = 12 [model: calc p=1.00 cov=0.72]
@@ -648,7 +648,7 @@ Email: klanarongz2009@gmail.com
 
 ## License
 
-Copyright (c) 2026 Klanarong Tammakatuek (klanarongz2009-sketch). Each part keeps its own license. The full texts and attributions are in [LICENSE](LICENSE), [DATA_LICENSE](DATA_LICENSE) and [NOTICE](NOTICE); if this table and those files ever differ, those files win.
+Copyright (c) 2026-2027 Klanarong Tammakatuek (klanarongz2009-sketch). Each part keeps its own license. The full texts and attributions are in [LICENSE](LICENSE), [DATA_LICENSE](DATA_LICENSE) and [NOTICE](NOTICE); if this table and those files ever differ, those files win.
 
 | Part | Files | License | In this repository? | Commercial use? |
 |---|---|---|---|---|
