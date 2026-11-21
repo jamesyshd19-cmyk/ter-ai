@@ -60,7 +60,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
 
 In no event shall the licensor or contributors be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the Software or its use.
 
-## How this License is applied in terai-router
+## How this License is applied in ter-ai
 
 - It applies only to new code. Every file released under the MIT License up to and including v0.17.0 stays under the MIT License.
 - A file is under this License only if it carries this line at the top, in the comment style of its language:

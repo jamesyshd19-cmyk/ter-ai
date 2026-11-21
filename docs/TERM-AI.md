@@ -46,7 +46,7 @@ Example (the first line goes to stderr):
 
 ```
 $ terai term "คำนวณ (12+8)*3"
-TERM AI is a limited-time trial: it stops working at 2027-01-01 00:00:00 Asia/Bangkok (UTC+7) and will be removed from terai-router then (N days left).
+TERM AI is a limited-time trial: it stops working at 2027-01-01 00:00:00 Asia/Bangkok (UTC+7) and will be removed from ter-ai then (N days left).
 TERM AI> (12+8)*3 = 60
 ```
 
@@ -74,8 +74,8 @@ daylight saving time, so no tz database is needed). It lives in
 
 | When | `terai term` (any arguments, `--help` included) | Python API |
 |---|---|---|
-| Before 2027-01-01 00:00:00 UTC+7 | prints one line to stderr: `TERM AI is a limited-time trial: it stops working at 2027-01-01 00:00:00 Asia/Bangkok (UTC+7) and will be removed from terai-router then (N days left).`, then runs; exit code 0 | works |
-| At 2027-01-01 00:00:00 UTC+7 or later | prints ``TERM AI trial ended at 2027-01-01 00:00:00 Asia/Bangkok (UTC+7). It no longer runs and is being removed from terai-router. Use `terai chat` instead.`` to stderr, prints nothing to stdout, does not read or write the memory file; **exit code 3** | `TermAI(...)` and `TermAI.reply()` raise `TrialEnded` |
+| Before 2027-01-01 00:00:00 UTC+7 | prints one line to stderr: `TERM AI is a limited-time trial: it stops working at 2027-01-01 00:00:00 Asia/Bangkok (UTC+7) and will be removed from ter-ai then (N days left).`, then runs; exit code 0 | works |
+| At 2027-01-01 00:00:00 UTC+7 or later | prints ``TERM AI trial ended at 2027-01-01 00:00:00 Asia/Bangkok (UTC+7). It no longer runs and is being removed from ter-ai. Use `terai chat` instead.`` to stderr, prints nothing to stdout, does not read or write the memory file; **exit code 3** | `TermAI(...)` and `TermAI.reply()` raise `TrialEnded` |
 | Interactive session still open at midnight | the next message gets no reply; the ended message is printed; exit code 3 | - |
 
 `python -m terai_router.term_ai.intent_model` follows the same rule (exit code 3). The check

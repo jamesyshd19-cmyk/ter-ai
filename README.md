@@ -560,7 +560,7 @@ TERM AI is the program TER-AI grew from, written on 2026-10-10 before this repos
 ```
 terai term                              # interactive; type ออก, exit or quit to end
 terai term "คำนวณ (12+8)*3"
-TERM AI is a limited-time trial: it stops working at 2027-01-01 00:00:00 Asia/Bangkok (UTC+7) and will be removed from terai-router then (N days left).
+TERM AI is a limited-time trial: it stops working at 2027-01-01 00:00:00 Asia/Bangkok (UTC+7) and will be removed from ter-ai then (N days left).
 TERM AI> (12+8)*3 = 60
 terai term --debug "ช่วยคิดเลข 3 คูณ 4"
 TERM AI> 3 * 4 = 12 [model: calc p=1.00 cov=0.72]

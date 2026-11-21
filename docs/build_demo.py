@@ -17,7 +17,7 @@ MUML_TABLE_HEADER = """/*
  * http://abc.sourceforge.net/NMD/). It holds counts only (which pitch follows which, which chord follows
  * which, which whole-bar rhythms occur); no tune is stored.
  * It is a byte copy of src/terai_router/muml_wa/data/markov.json, written by docs/build_demo.py.
- * The code of terai-router (including docs/muml_wa.js) is MIT; this file is not. See DATA_LICENSE.
+ * The code of ter-ai (including docs/muml_wa.js) is MIT; this file is not. See DATA_LICENSE.
  */
 """
 

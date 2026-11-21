@@ -1,7 +1,7 @@
 """TERM AI chatbot: regex rules first, then the tiny trained intent model (no network).
 
 This is the original Terminal AI program (term_ai.py, 2026-10-10, with the TER-AI-0.5 intent
-model), packaged so it runs from terai-router. Behaviour is kept as it was: the same rules,
+model), packaged so it runs from ter-ai. Behaviour is kept as it was: the same rules,
 replies (in Thai), thresholds (model confidence >= 0.9 and n-gram coverage > 0.5) and
 fallbacks. What changed for the package: the clock and the random generator can be injected,
 the memory file path is a parameter, and every reply checks the trial time limit.

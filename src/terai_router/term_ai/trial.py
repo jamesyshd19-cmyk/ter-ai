@@ -65,13 +65,13 @@ def notice_line(now=None):
     else:
         rest = 'less than 1 day left'
     return (f'TERM AI is a limited-time trial: it stops working at {TRIAL_END_TEXT} and will be removed '
-            f'from terai-router then ({rest}).')
+            f'from ter-ai then ({rest}).')
 
 
 def ended_message():
     """Message printed (to stderr) when TERM AI is run at or after the end."""
     return (f'TERM AI trial ended at {TRIAL_END_TEXT}. It no longer runs and is being removed from '
-            f'terai-router. Use `terai chat` instead.')
+            f'ter-ai. Use `terai chat` instead.')
 
 
 def check_trial(now=None):

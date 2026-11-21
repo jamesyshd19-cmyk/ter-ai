@@ -30,7 +30,7 @@ TABLE_LICENSE = {
     'spdx': 'GPL-3.0-only',
     'text': 'LICENSE-GPL-3.0.txt (next to this file)',
     'notice': ('This data file is licensed under the GNU General Public License v3.0, the license of the dataset '
-               'it was built from. The code of terai-router is MIT; this file is not.'),
+               'it was built from. The code of ter-ai is MIT; this file is not.'),
     'source': 'Nottingham Music Database, cleaned by jukedeck/nottingham-dataset',
     'source_url': 'https://github.com/jukedeck/nottingham-dataset',
     'source_commit': '0992bb6cd864f6d4b90d6663e08c0ef53ffaa08f',
